@@ -35,14 +35,21 @@ export default function AdminMapScreen() {
     if (playingAudioId === reportId) return;
     try {
       setPlayingAudioId(reportId);
-      // Play realistic mock audio for hackathon
-      const player = new AudioPlayer('https://actions.google.com/sounds/v1/human_voices/human_chatter.ogg');
-      await player.play();
+      const url = 'https://actions.google.com/sounds/v1/human_voices/human_chatter.ogg';
+      let player = null;
+
+      if (Platform.OS === 'web') {
+        player = new window.Audio(url);
+        player.play();
+      } else {
+        player = new AudioPlayer(url);
+        await player.play();
+      }
       
       setTimeout(() => {
         setPlayingAudioId(null);
         try {
-          player.pause();
+          if (player) player.pause();
         } catch(e) {}
       }, 4000);
     } catch (e) {

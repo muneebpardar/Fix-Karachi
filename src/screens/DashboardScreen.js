@@ -65,15 +65,23 @@ export default function DashboardScreen() {
     if (playingAudioId === reportId) return;
     try {
       setPlayingAudioId(reportId);
-      // Play a realistic simulation of a voice reporting an issue
-      const player = new AudioPlayer('https://actions.google.com/sounds/v1/human_voices/human_chatter.ogg');
-      await player.play();
+      const url = 'https://actions.google.com/sounds/v1/human_voices/human_chatter.ogg';
+      let player = null;
+
+      // Platform split: HTML5 Audio for Web, expo-audio for Native Mobile
+      if (Platform.OS === 'web') {
+        player = new window.Audio(url);
+        player.play();
+      } else {
+        player = new AudioPlayer(url);
+        await player.play();
+      }
       
       // Reset state after 4 seconds (simulated clip length)
       setTimeout(() => {
         setPlayingAudioId(null);
         try {
-          player.pause();
+          if (player) player.pause();
         } catch(e) {}
       }, 4000);
     } catch (e) {
