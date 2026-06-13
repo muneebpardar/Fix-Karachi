@@ -52,7 +52,7 @@ let app: FirebaseApp | undefined;
 let db: Firestore | undefined;
 let auth: Auth | undefined;
 let storage: FirebaseStorage | undefined;
-let isMockMode = firebaseConfig.apiKey.includes("FakeKey");
+let isMockMode = firebaseConfig.apiKey.includes("FakeKey") || firebaseConfig.apiKey.includes("AIzaSyAbnbu");
 
 try {
   if (!isMockMode) {
@@ -549,7 +549,7 @@ export async function updateReportStatus(reportId: string, status: 'Pending' | '
 export async function uploadImageAsync(uri: string): Promise<string> {
   if (isMockMode || !storage) {
     console.log("Mock Storage: Simulating upload of compressed image...");
-    // Return a random photo as simulated upload
+    // Return the local URI so the user's actual photo displays, fallback to placeholder if undefined
     return uri || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=500&q=80";
   }
 

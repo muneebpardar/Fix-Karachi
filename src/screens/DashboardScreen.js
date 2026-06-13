@@ -11,7 +11,7 @@ import {
   TextInput,
   Platform
 } from 'react-native';
-import { useAudioPlayer, AudioPlayer } from 'expo-audio';
+import { createAudioPlayer } from 'expo-audio';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLanguage } from '@/services/localization';
 import { 
@@ -73,15 +73,20 @@ export default function DashboardScreen() {
         player = new window.Audio(url);
         player.play();
       } else {
-        player = new AudioPlayer(url);
-        await player.play();
+        player = createAudioPlayer(url);
+        player.play();
       }
       
       // Reset state after 4 seconds (simulated clip length)
       setTimeout(() => {
         setPlayingAudioId(null);
         try {
-          if (player) player.pause();
+          if (player) {
+            player.pause();
+            if (Platform.OS !== 'web') {
+              player.release();
+            }
+          }
         } catch(e) {}
       }, 4000);
     } catch (e) {
