@@ -38,6 +38,7 @@
       "expo-audio"
     ],
     "experiments": {
+      "baseUrl": "/Fix-Karachi",
       "typedRoutes": true,
       "reactCompiler": true
     }
